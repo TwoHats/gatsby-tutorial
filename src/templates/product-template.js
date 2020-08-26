@@ -1,7 +1,38 @@
 import React from "react"
-import { graphql } from "gatsby"
+import { graphql, Link } from "gatsby"
+import Layout from "../components/Layout"
+import Image from "gatsby-image"
 
-const ComponentName = ({ data }) => <pre>{JSON.stringify(data, null, 4)}</pre>
+const ComponentName = ({ 
+  data: {
+    product: {
+      price, 
+      title, 
+      image: {fixed}, 
+      info: {info},
+    },
+  },
+}) => {
+  return (
+    <Layout>
+      <div style = {{textAlign: "center"}}>
+        <Link to ="/products">back to products</Link>
+        <h1>single product: {title}</h1>
+      </div>
+      <section className = "single-product">
+        <article>
+          <Image fixed = {fixed} alt = {title}/>
+        </article>
+        <article>
+          <h1>{title}</h1>
+          <h3>${price}</h3>
+          <p>{info}</p>
+          <button>add to cart</button>
+        </article>
+      </section>
+    </Layout>
+  )
+}
 
 export const query = graphql`
 query GetSingleProduct($slug: String) {
@@ -9,8 +40,8 @@ query GetSingleProduct($slug: String) {
       title
       price
       image {
-        fixed {
-          src
+        fixed(width: 300) {
+          ...GatsbyContentfulFixed
         }
       }
       info {
